@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'category',
     'accounts',
     'store',
+    'carts',
 ]
 
 MIDDLEWARE = [
@@ -68,6 +69,8 @@ TEMPLATES = [
                 # allows the use of categories on navigation bar or anywhere in all templates
                 # name of app, name of file, then the method name
                 'category.context_processors.menu_links',
+                 # name of app, name of file, then the method name
+                'carts.context_processors.counter',
             ],
         },
     },
