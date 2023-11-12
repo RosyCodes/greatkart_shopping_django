@@ -13,6 +13,9 @@ from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
 
+# imports the private function for session cart_id
+from carts.views import _cart_id
+from carts.models import Cart, CartItem
 
 def register(request):
     form = RegistrationForm(request.POST or None)
@@ -58,6 +61,56 @@ def login(request):
 
         user = auth.authenticate(email=email,password=password)
         if user is not None:
+            
+            # checks if the user has a non-empty cart before login
+            try:
+                cart = Cart.objects.get(cart_id=_cart_id(request))  # the _cart_id is a  private function that gets the session key from the carts\views.py
+                # provides grouping according to variations otherwise update the quantity
+                is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
+
+                # if the cart is not empty before login, save this cart to the user
+                if is_cart_item_exists:
+                    cart_item = CartItem.objects.filter(cart=cart)
+
+                    # getting the product by category (size/color) using the cart_id
+                    # if user has added products into his shopping cart before login
+                    product_variation = []
+                    for item in cart_item:
+                        variation = item.variations.all()
+                        product_variation.append(list(variation))
+
+                    # Get the cart items from the user to access his product variation.
+                    cart_item = CartItem.objects.filter(user=user)
+                    # checks if the current variation is present in the existing variations, then update the quantity
+                    ex_var_list = []   # empty list of existing variations
+                    id = [] # empty cart ID list
+
+
+                    for item in cart_item:
+                        existing_variation = item.variations.all()
+                        # returns a query set, so type cast the queryset into a list
+                        ex_var_list.append(list(existing_variation))
+                        id.append(item.id)
+
+
+                    # Ex. product_variation  =  [1, 2, 3, 4, 6]
+                    # Ex. ex_var_list  =  [4, 6, 3, 5]
+                    
+                    for pr in product_variation:
+                        if pr in ex_var_list:
+                            index = ex_var_list.index(pr)
+                            item_id = id[index]
+                            item = CartItem.objects.get(id=item_id)
+                            item.quantity +=1
+                            item.user = user
+                            item.save()
+                        else:
+                            cart_item = CartItem.objects.filter(cart=cart)
+                            for item in cart_item:
+                                item.user = user
+                                item.save()
+            except:
+                pass
             auth.login(request,user)
             messages.success(request,"You are now logged in.")
             return redirect('dashboard')
