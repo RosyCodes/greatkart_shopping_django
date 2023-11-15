@@ -13,7 +13,7 @@ class Cart(models.Model):
 
 class CartItem(models.Model):
     
-    user = models.ForeignKey(Account,on_delete=models.CASCADE,null=True) # assigns the user to a non-empty cart.
+    user = models.ForeignKey(Account,on_delete=models.CASCADE,blank=True) # assigns the user to a non-empty cart.
     product = models.ForeignKey(Product,on_delete=models.CASCADE)
     variations = models.ManyToManyField(Variation,blank=True)
     cart    = models.ForeignKey(Cart,on_delete=models.CASCADE)
