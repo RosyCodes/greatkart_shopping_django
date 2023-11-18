@@ -16,6 +16,7 @@ from django.core.mail import EmailMessage
 # imports the private function for session cart_id
 from carts.views import _cart_id
 from carts.models import Cart, CartItem
+import requests
 
 def register(request):
     form = RegistrationForm(request.POST or None)
@@ -113,7 +114,25 @@ def login(request):
                 pass
             auth.login(request,user)
             messages.success(request,"You are now logged in.")
-            return redirect('dashboard')
+            # redirects to checkout if user has some non-empty cart
+            url = request.META.get('HTTP_REFERER')
+            # uses the REQUEST library 
+
+            try:
+                print('HELLO')
+                query = requests.utils.urlparse(url).query
+                #print('query -->',query) # results to query --> 'next=/cart/checkout/'
+                # splits next=/cart/checkout/
+               
+                params = dict(x.split('=') for x in query.split('&'))
+                #print('params -->',params) # returns params --> {'next': '/cart/checkout/'}
+                if 'next' in params:
+                    nextPage = params['next']
+                    return redirect(nextPage)
+                
+            except:
+                return redirect('dashboard')
+
         else:
             messages.error(request,'Invalid login credentials.')
             return redirect('login')
