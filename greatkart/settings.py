@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+from django.contrib.messages import constants as messages
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -27,6 +28,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# FOR TESTING, SET TO TRUE, OTHERWISE DURING PRODUCTION, SET THIS TO FALSE.
+PAYPAL_TEST = True
 
 # Application definition
 
@@ -41,6 +44,8 @@ INSTALLED_APPS = [
     'accounts',
     'store',
     'carts',
+    'orders',
+    'paypal.standard.ipn',
 ]
 
 MIDDLEWARE = [
@@ -69,7 +74,7 @@ TEMPLATES = [
                 # allows the use of categories on navigation bar or anywhere in all templates
                 # name of app, name of file, then the method name
                 'category.context_processors.menu_links',
-                 # name of app, name of file, then the method name
+                # name of app, name of file, then the method name
                 'carts.context_processors.counter',
             ],
         },
@@ -140,7 +145,6 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # customizes alert messages
-from django.contrib.messages import constants as messages
 MESSAGE_TAGS = {
     messages.ERROR: "danger",
 }
@@ -149,7 +153,8 @@ MESSAGE_TAGS = {
 # Google app password: https://support.google.com/accounts/answer/185833
 
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT=587
-EMAIL_USE_TLS=True
-EMAIL_HOST_USER='REMOVED'
-EMAIL_HOST_PASSWORD='REMOVED'  # Google app password instead of the regular password
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'REMOVED'
+# Google app password instead of the regular password
+EMAIL_HOST_PASSWORD = 'REMOVED'
