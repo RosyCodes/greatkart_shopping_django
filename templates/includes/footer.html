@@ -19,3 +19,21 @@
     </div><!-- //container -->
 </footer>
 <!-- ========================= FOOTER END // ========================= -->
+
+<!-- script for product gallery to show as main page once selected-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.thumb a').click(function (e) {
+            e.preventDefault();  // prevents the image to open to a new window 
+            $('.mainImage img').attr('src', $(this).attr("href")); // shows the clicked image to be the main image
+        })
+
+    })
+</script>
+
+
+
+</body>
+
+</html>

@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from django.contrib.messages import constants as messages
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
@@ -21,10 +22,12 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'uw*cm&s^ls=9+t-#51*y&gf40(a9w_d%j%fbv(_g*(72pqov!a'
+SECRET_KEY = config('SECRET_KEY')  # gets the value from the .env file
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# changes the string to boolean value - True
+DEBUG = config('DEBUG', default=True, cast=bool)
 
 ALLOWED_HOSTS = []
 
@@ -46,6 +49,7 @@ INSTALLED_APPS = [
     'carts',
     'orders',
     'paypal.standard.ipn',
+    'admin_honeypot',
 ]
 
 MIDDLEWARE = [
@@ -56,7 +60,14 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_session_timeout.middleware.SessionTimeoutMiddleware',
+
 ]
+
+SESSION_EXPIRE_SECONDS = 30  # 1 hour=3600
+SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
+SESSION_TIMEOUT_REDIRECT = 'accounts/login'
+
 
 ROOT_URLCONF = 'greatkart.urls'
 
@@ -151,10 +162,11 @@ MESSAGE_TAGS = {
 
 # SMTP email configuration
 # Google app password: https://support.google.com/accounts/answer/185833
-
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'REMOVED'
-# Google app password instead of the regular password
-EMAIL_HOST_PASSWORD = 'REMOVED'
+# values are kept in .env file
+EMAIL_HOST = config('EMAIL_HOST')
+# converts value from string to integer
+EMAIL_PORT = config('EMAIL_PORT', cast=int)
+# converts value from string to boolean
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')

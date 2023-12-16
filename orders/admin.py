@@ -2,6 +2,8 @@ from django.contrib import admin
 from .models import Payment, Order, OrderProduct
 # Register your models here.
 
+# adds the product variation together with the table Order
+
 
 class OrderProductInline(admin.TabularInline):
     model = OrderProduct
