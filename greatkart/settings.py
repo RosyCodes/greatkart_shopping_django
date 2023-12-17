@@ -29,7 +29,8 @@ SECRET_KEY = config('SECRET_KEY')  # gets the value from the .env file
 # changes the string to boolean value - True
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'django-greatkart-env.eba-7rv9edna.us-west-2.elasticbeanstalk.com']
 
 # FOR TESTING, SET TO TRUE, OTHERWISE DURING PRODUCTION, SET THIS TO FALSE.
 PAYPAL_TEST = True
@@ -64,9 +65,10 @@ MIDDLEWARE = [
 
 ]
 
-SESSION_EXPIRE_SECONDS = 30  # 1 hour=3600
+SESSION_EXPIRE_SECONDS = 3600  # 1 hour
 SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
-SESSION_TIMEOUT_REDIRECT = 'accounts/login'
+# redirects to login page after logged-in account is left inactive.
+SESSION_TIMEOUT_REDIRECT = '/accounts/login'
 
 
 ROOT_URLCONF = 'greatkart.urls'
@@ -170,3 +172,6 @@ EMAIL_PORT = config('EMAIL_PORT', cast=int)
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+
+# addresses the warning on auto_field which happens when you update the django version
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
