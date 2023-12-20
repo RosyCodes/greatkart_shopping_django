@@ -30,7 +30,8 @@ SECRET_KEY = config('SECRET_KEY')  # gets the value from the .env file
 DEBUG = config('DEBUG', default=True, cast=bool)
 
 ALLOWED_HOSTS = [
-    'django-greatkart-env.eba-7rv9edna.us-west-2.elasticbeanstalk.com']
+    'django-greatkart-env.eba-7rv9edna.us-west-2.elasticbeanstalk.com',]
+
 
 # FOR TESTING, SET TO TRUE, OTHERWISE DURING PRODUCTION, SET THIS TO FALSE.
 PAYPAL_TEST = True
