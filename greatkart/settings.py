@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from django.contrib.messages import constants as messages
 from pathlib import Path
-from decouple import config
+from decouple import config  # THIS IS USED FOR THE MERGING OF SENSITIVE FILES
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
@@ -28,6 +28,7 @@ SECRET_KEY = config('SECRET_KEY')  # gets the value from the .env file
 # SECURITY WARNING: don't run with debug turned on in production!
 # changes the string to boolean value - True
 DEBUG = config('DEBUG', default=True, cast=bool)
+
 
 ALLOWED_HOSTS = [
     'django-greatkart-env.eba-7rv9edna.us-west-2.elasticbeanstalk.com',]
@@ -52,6 +53,7 @@ INSTALLED_APPS = [
     'orders',
     'paypal.standard.ipn',
     'admin_honeypot',
+
 ]
 
 MIDDLEWARE = [
@@ -167,12 +169,9 @@ MESSAGE_TAGS = {
 # Google app password: https://support.google.com/accounts/answer/185833
 # values are kept in .env file
 EMAIL_HOST = config('EMAIL_HOST')
-# converts value from string to integer
 EMAIL_PORT = config('EMAIL_PORT', cast=int)
-# converts value from string to boolean
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
-# addresses the warning on auto_field which happens when you update the django version
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
