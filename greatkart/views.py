@@ -7,6 +7,7 @@ def home(request):
         is_available=True).order_by('created_date')
 
     # get the reviews for this specific product
+    reviews = None
     for product in products:
 
         reviews = ReviewRating.objects.filter(
