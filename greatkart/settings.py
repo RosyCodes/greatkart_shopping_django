@@ -31,8 +31,7 @@ SECRET_KEY = config('SECRET_KEY')  # gets the value from the .env file
 DEBUG = config('DEBUG', default=True, cast=bool)
 
 # to test in your local machine, add '127.0.0.1'
-ALLOWED_HOSTS = [
-    'django-greatkart-env.eba-7rv9edna.us-west-2.elasticbeanstalk.com',]
+ALLOWED_HOSTS = ['*']
 
 
 # FOR TESTING, SET TO TRUE, OTHERWISE DURING PRODUCTION, SET THIS TO FALSE.
