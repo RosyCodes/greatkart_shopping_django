@@ -30,8 +30,9 @@ SECRET_KEY = config('SECRET_KEY')  # gets the value from the .env file
 # changes the string to boolean value - True
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-# to test in your local machine, add '127.0.0.1'
-ALLOWED_HOSTS = ['*']
+# to test in your local machine, add '127.0.0.1 or * for all'
+ALLOWED_HOSTS = ['*',
+                 'django-greatkart-env.eba-7rv9edna.us-west-2.elasticbeanstalk.com']
 
 
 # FOR TESTING, SET TO TRUE, OTHERWISE DURING PRODUCTION, SET THIS TO FALSE.
@@ -53,6 +54,7 @@ INSTALLED_APPS = [
     'orders',
     'paypal.standard.ipn',
     'admin_honeypot',
+    'storages',
 
 ]
 
@@ -163,11 +165,36 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'static'
+# this block of code of static & media applies only to local development
+# STATIC_URL = '/static/'
+# STATIC_ROOT = BASE_DIR / 'static'
+# STATICFILES_DIRS = [
+#     'greatkart/static',
+# ]
+
+
+# AWS S3 Static Files Configuration
+# update the .env file as well for these values from AWS S3
+AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = 'public-read'
+AWS_LOCATION = 'static'
+
 STATICFILES_DIRS = [
     'greatkart/static',
 ]
+STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+# links to the class of the main project's media_storages.py
+DEFAULT_FILE_STORAGE = 'greatkart.media_storages.MediaStorage'
+
 
 # media files configuration
 MEDIA_URL = '/media/'
